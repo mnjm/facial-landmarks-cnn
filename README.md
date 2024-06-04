@@ -3,6 +3,7 @@
 To begin with, this project builds upon [ccn-facial-landmark](https://github.com/yinguobing/cnn-facial-landmark).
 
 Here is a quick demo
+
 ![Demo](./demo.gif?raw=true)
 
 **Dependencies**
