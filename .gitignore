@@ -1,0 +1,5 @@
+tfrecords/
+logs/
+checkpoints/
+*.mp4
+*.keras
