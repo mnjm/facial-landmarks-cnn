@@ -3,7 +3,7 @@
 To begin with, this project builds upon [ccn-facial-landmark](https://github.com/yinguobing/cnn-facial-landmark).
 
 Here is a quick demo
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/QF2hQAlCHQM?si=3gCg5RzR7kY1P0RI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+[![Demo](https://img.youtube.com/vi/QF2hQAlCHQM/0.jpg)](https://www.youtube.com/watch?v=QF2hQAlCHQM)
 **Dependencies**
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-v2.16-blue)
 ![NumPy](https://img.shields.io/badge/NumPy-1.26-blue)
