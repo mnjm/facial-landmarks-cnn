@@ -48,7 +48,6 @@ class MarkDataset:
         # Flip the image horizontally
         ret_img = tf.image.flip_left_right(img)
 
-        assert self.n_points == 6, "Only supports 6 points"
         marks = tf.reshape(marks, (self.n_points, 2))
 
         # Flip the marks and adjust x
@@ -77,7 +76,7 @@ class MarkDataset:
 if __name__ == "__main__":
 
     import sys
-    from utils import draw_marks, opencv_pause_quit_window
+    from .utils import draw_marks, opencv_pause_quit_window
     import cv2
     from os import path
 
@@ -85,14 +84,16 @@ if __name__ == "__main__":
     pattern = path.join(sys.argv[1], '*.tfrecord')
     print(f"pattern: {pattern}")
 
-    marks_ds = MarkDataset(pattern, (128, 128, 1), 6, 1)
+    N_POINTS = 8
+
+    marks_ds = MarkDataset(pattern, (128, 128, 1), N_POINTS, 1)
     ds = marks_ds.get_dataset_pipeline()
 
     for img, marks in ds.as_numpy_iterator():
 
         img = img.reshape(128,128) * 255
         img = img.astype(np.uint8)
-        marks = marks.reshape(6, 2).astype(np.uint8)
+        marks = marks.reshape(N_POINTS, 2).astype(np.uint8)
 
         img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
         draw_marks(img, marks, draw_idx = True)
