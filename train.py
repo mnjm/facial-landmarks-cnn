@@ -51,6 +51,8 @@ def main():
     print(f"Model name: {model.name}")
     print("="*100)
     model.summary()
+    print("#"*100)
+
     if args.load_from:
         model.load_weights(args.load_from)
 

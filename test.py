@@ -13,10 +13,11 @@ def get_cl_args():
     parser = ArgumentParser("Test model on dataset")
     parser.add_argument("model_file", help=".keras model file")
     parser.add_argument("loc", help="path images folder or .avi file")
+    parser.add_argument("--n_points", default=6, type=int, help = "How many points?")
     parser.add_argument("--save_video", default=False, help = "save output video?", action='store_true')
     return parser.parse_args()
 
-def eval_on_frame(model, img, bbox, marks):
+def eval_on_frame(model, img, bbox, marks, n_points=6):
 
     # Scale the image
     s_img, s_bbox, s_marks = scale_bbox_and_crop(img, bbox, marks, np.random.uniform(1, 1.2))
@@ -32,7 +33,7 @@ def eval_on_frame(model, img, bbox, marks):
     n_img = n_img.reshape([1, 128, 128, 1])
 
     # run the model
-    p_marks = model.predict(n_img, verbose=0).reshape(6, 2)
+    p_marks = model.predict(n_img, verbose=0).reshape(n_points, 2)
 
     # debug
     # v_img = cv2.cvtColor(r_img, cv2.COLOR_GRAY2BGR)
@@ -51,16 +52,16 @@ def eval_on_frame(model, img, bbox, marks):
 
     return p_marks, mse
 
-def data_gen(loc):
+def data_gen(loc, n_points):
 
     if loc.endswith('.avi'):
-        for name, img, bbox, marks in read_video_with_annot(loc, 6):
+        for name, img, bbox, marks in read_video_with_annot(loc, n_points):
             yield name, img, bbox, marks
     else:
         imgs_l = glob(path.join(loc, "*.png"))
         imgs_l.extend(glob(path.join(loc, "*.jpg")))
         for img_p in imgs_l:
-            name, img, bbox, marks = read_img_with_annot(img_p, 6)
+            name, img, bbox, marks = read_img_with_annot(img_p, n_points)
             yield name, img, bbox, marks
 
 def create_vid_writer(frame):
@@ -76,8 +77,8 @@ def main():
 
     vid_writer = None
 
-    for _, img, bbox, marks in data_gen(args.loc):
-        p_marks, _ = eval_on_frame(model, img, bbox, marks)
+    for _, img, bbox, marks in data_gen(args.loc, args.n_points):
+        p_marks, _ = eval_on_frame(model, img, bbox, marks, args.n_points)
         draw_marks(img, p_marks, color=(0,255,0), draw_idx = False)
 
         frame = cv2.resize(img, (600, 800)) if not args.loc.endswith('.avi') else img
