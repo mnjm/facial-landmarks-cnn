@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-import utils
+from . import utils
 
 def convert_to_example_and_serialize(sample_name, img, marks):
     img, marks = img.astype(np.uint8), marks.astype(np.uint8)

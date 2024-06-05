@@ -4,6 +4,8 @@ import numpy as np
 marks_map_68 = {
     # left eye, right eye and mouth points each with (left, right) pairs
     6 : [36, 39, 42, 45, 48, 54],
+    # left eye, right eye, mouth points each with (left, right) pairs, nose tip and chin
+    8 : [36, 39, 42, 45, 48, 54, 33, 8],
     # default map
     68 : list(range(68))
 }
@@ -11,7 +13,9 @@ marks_map_68 = {
 # map for flip augmentation
 flip_map = {
     # right eye, left eye and mouth with (right followed by left pairs)
-    6 : [3, 2, 1, 0, 5, 4]
+    6 : [3, 2, 1, 0, 5, 4],
+    # right eye, left eye and mouth with (right followed by left pairs), nose tip and chin
+    8 : [3, 2, 1, 0, 5, 4, 6, 7]
 }
 
 # read marks from .pts file
@@ -23,13 +27,13 @@ def read_pts_file(f_path):
     Return:
         numpy array of size (68x2)
     """
-    marks = np.ones((68, 2)) * np.nan
+    marks = np.ones((68, 2), dtype=np.float32) * np.nan
     i = 0
     with open(f_path) as f:
         for line in f:
             if "version" in line or "n_points" in line or "{" in line or "}" in line: continue
             x, y = ( float(val) for val in line.split(" ")[:2] )
-            marks[i, 0], marks[i, 1] = x, y
+            marks[i, 0], marks[i, 1] = x - 1, y - 1
             i += 1
         assert i == 68, "Failed loading 68 landmarks"
     return marks
@@ -61,11 +65,13 @@ def scale_bbox(bbox, scale):
 
 def scale_bbox_and_crop(img, bbox, marks, scale):
     ret_bbox = scale_bbox(bbox, scale)
-    (x0, y0, x1, y1) = ret_bbox.reshape(4).astype(np.int32)
+    ret_bbox = np.round(ret_bbox).astype(np.int32)
+    (x0, y0, x1, y1) = ret_bbox.reshape(4)
     if x0 < 0: x0 = 0
     if y0 < 0: y0 = 0
     if x1 > img.shape[1]: x1 = img.shape[1]
     if y1 > img.shape[0]: y1 = img.shape[0]
+    ret_bbox = np.array( [ [x0, y0], [x1, y1] ] )
     ret_img = img[y0:y1, x0:x1]
     ret_marks = marks - ret_bbox[0, :]
     return ret_img, ret_bbox, ret_marks
@@ -73,8 +79,10 @@ def scale_bbox_and_crop(img, bbox, marks, scale):
 def resize_to_input_shape(img, marks, input_shape):
     ret_img = cv2.resize(img, input_shape)
     ret_marks = np.copy(marks)
-    ret_marks[:, 0] *= (float(input_shape[1]) / img.shape[1])
-    ret_marks[:, 1] *= (float(input_shape[0]) / img.shape[0])
+    s_w = float(input_shape[1]) / img.shape[1]
+    s_h = float(input_shape[0]) / img.shape[0]
+    ret_marks[:, 0] *= s_w
+    ret_marks[:, 1] *= s_h
     return ret_img, ret_marks
 
 def apply_img_hist(img):
@@ -86,7 +94,7 @@ def augment_flip(img, marks):
 
     # map points
     n_points = marks.shape[0]
-    assert n_points in flip_map[n_points], f"Flip map for {n_points}pts not found"
+    assert n_points in flip_map.keys(), f"Flip map for {n_points}pts not found"
     ret_marks = marks[flip_map[n_points], :]
 
     # offset

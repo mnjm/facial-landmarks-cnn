@@ -3,7 +3,7 @@ import numpy as np
 import sys
 from os import path
 from glob import glob
-import utils
+from . import utils
 import random
 
 # Dataset format
