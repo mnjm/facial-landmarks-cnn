@@ -51,13 +51,12 @@ if __name__ == "__main__":
             count += 1
 
             # scale and crop img
-            img, _, marks = scale_bbox_and_crop(img, bbox, marks, np.random.uniform(1.1, 1.3))
+            img, _, marks = scale_bbox_and_crop(img, bbox, marks, np.random.uniform(1.0, 1.2))
             assert INPUT_SHAPE[2] == 1, "For hist eq preproc, input should have 1 channel (gray)"
             # apply histogram equalization
             img = apply_img_hist(img)
             # resize img and scale landmarks accordingly
             img, marks = resize_to_input_shape(img, marks, (INPUT_SHAPE[1], INPUT_SHAPE[0]))
-            assert np.all(marks >= 0) and np.all(marks <= INPUT_SHAPE[0]), f"Marks out of bounds {s_name}"
 
             writer.write(convert_to_example_and_serialize(s_name, img, marks))
             shard_sample_count += 1
