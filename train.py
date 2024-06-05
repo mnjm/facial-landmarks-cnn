@@ -9,7 +9,7 @@ from datetime import datetime
 
 which_model = { 'github': github_model, 'vgg16': vgg16 }
 INPUT_SHAPE = (128, 128, 1)
-N_POINTS = 6
+N_POINTS = 8
 
 N_TRAINING_SAMPLES = 188772
 N_VAL_SAMPLES = 34262
