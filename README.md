@@ -25,7 +25,7 @@ Here is a quick demo
 - Prepared dataset is stored and served to the model as tfrecord files in sharded fashion
 
 ### [300-VW](https://ibug.doc.ic.ac.uk/resources/300-VW/)
-Since this dataset is composed of AVI video files (unlike the others), I have a separate data preparation code specific to it (File `prep_300vw_dataset.py`).
+Since this dataset is composed of AVI video files (unlike the others), I have a separate data preparation code specific to it (File `prep_300vw.py`).
 **Dataset file structure**
 ```
 300VW
@@ -41,7 +41,7 @@ frame_no format "%06d"
 ```
 To run, pass the dataset dir and path to store the tf record file,
 ```bash
-python prep_300vw_dataset.py <dataset_loc> <tfrecord_save_loc>
+python prep_300vw.py <dataset_loc> <tfrecord_save_loc> (--test_set)
 ```
 
 ## Other datasets
@@ -57,21 +57,22 @@ python prep_300vw_dataset.py <dataset_loc> <tfrecord_save_loc>
 ```
 To run, provide the dataset directory and the path to store the TFRecord file
 ```bash
-python prep_other_datasets.py <dataset_loc> <tfrecord_save_loc>
+python prep_others.py <dataset_loc> <tfrecord_save_loc> (--test_set)
 ```
 
 ## Training
 Command to train the model.
 ```bash
-python train.py github \
+python train.py <model_type> \
 --tfrecords_dir <tfrecords_dir> \
 --load_from <best_checkpoint_to_start_from> \ # This can be skipped
 --epochs 10 --batch_size 1024 --learning_rate 0.001
 ```
+- Check [here](https://github.com/mnjm/facial-landmarks-cnn/blob/f2dfcc883b07128877f19eeed0abdfe616ea10c5/train.py#L10C1-L10C57) for model types
 
 ## Eval
 ```bash
-python train.py github \
+python train.py <model_type> \
 --tfrecords_dir <tfrecords_dir> \
 --load_from <model_checkpoint_to_eval> \
 --eval
@@ -80,7 +81,7 @@ python train.py github \
 ## Export
 Best model can be exported to Keras native `.keras` format
 ```bash
-python train.py github --export_model --load_from <model_to_export>
+python train.py <model_type> --export_model --load_from <model_to_export>
 ```
 
 ## Visual Test

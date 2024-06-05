@@ -18,18 +18,14 @@ import random
 #     │   └── vid.avi
 # frame_no format "%06d"
 
-# left eye, right eye and mouth points each with (left, right) pairs
-
-
 class Video_300VW:
-    six_key_points_idxs = [36, 39, 42, 45, 48, 54]
 
     def __init__(self, vid_path, n_points):
-        assert n_points == 68 or n_points == 6, "Invalid n_points: it should either be 68 or 6"
         self.vid = cv2.VideoCapture(vid_path)
         self.f_count = 0
         self.annot_dir = path.join(path.dirname(vid_path), "annot")
         self.n_points = n_points
+        assert self.n_points in utils.marks_map_68.keys(), f"Map for {self.n_points}pts not found"
         self.vid_name = vid_path.split(path.sep)[-2]
         self.done = False
 
@@ -46,8 +42,8 @@ class Video_300VW:
         self.f_count += 1
         marks = utils.read_pts_file(path.join(self.annot_dir, "%06d.pts"%self.f_count))
         bbox = utils.bbox_from_marks(marks)
-        if self.n_points == 6: marks = marks[Video_300VW.six_key_points_idxs, :]
-        # sample_name = vid_name + f_count
+        # map to n_points pts
+        marks = marks[utils.marks_map_68[self.n_points], :]
         sample_name = self.vid_name + "_%06d"%self.f_count
 
         return True, sample_name, img, bbox, marks

@@ -1,11 +1,11 @@
 import tensorflow as tf
 import numpy as np
-from dataset import convert_to_example_and_serialize
+from data import convert_to_example_and_serialize
 from argparse import ArgumentParser
 from glob import glob
 from os import path
-from read_dataset_300vw import Video_300VW
-from utils import scale_bbox_and_crop, resize_to_input_shape, apply_img_hist
+from data.read_300vw import Video_300VW
+from data.utils import scale_bbox_and_crop, resize_to_input_shape, apply_img_hist
 
 SHARD_SIZE = 1024
 INPUT_SHAPE = (128, 128, 1)

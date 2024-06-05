@@ -1,7 +1,7 @@
 from tensorflow import keras as K
 from os import path, mkdir
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-from dataset import MarkDataset
+from data import MarkDataset
 from models.from_github import github_model
 from models.vgg16 import vgg16
 from math import ceil
@@ -76,7 +76,6 @@ def main():
     if not path.isdir(ch_path): mkdir(ch_path)
     logs_path = path.join(args.save_dir, "logs")
     if not path.isdir(ch_path): mkdir(logs_path)
-
 
     # Dataset
     train_ds, val_ds = get_dataset(args), get_dataset(args, val_set = True)

@@ -1,8 +1,18 @@
 import cv2
 import numpy as np
 
-# used for flip augmentation, right eye, left eye and mouth with (right followed by left pairs)
-flip_six_mark_idx = [3, 2, 1, 0, 5, 4]
+marks_map_68 = {
+    # left eye, right eye and mouth points each with (left, right) pairs
+    6 : [36, 39, 42, 45, 48, 54],
+    # default map
+    68 : list(range(68))
+}
+
+# map for flip augmentation
+flip_map = {
+    # right eye, left eye and mouth with (right followed by left pairs)
+    6 : [3, 2, 1, 0, 5, 4]
+}
 
 # read marks from .pts file
 def read_pts_file(f_path):
@@ -71,9 +81,15 @@ def apply_img_hist(img):
     return cv2.equalizeHist(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
 
 def augment_flip(img, marks):
+    # flip image
     ret_img = cv2.flip(img, 1)
-    assert marks.shape[0] == 6 and marks.shape[1] == 2, "marks should be [6, 2]"
-    ret_marks = marks[flip_six_mark_idx]
+
+    # map points
+    n_points = marks.shape[0]
+    assert n_points in flip_map[n_points], f"Flip map for {n_points}pts not found"
+    ret_marks = marks[flip_map[n_points], :]
+
+    # offset
     ret_marks[:, 0] = img.shape[1] - ret_marks[:, 0]
     return ret_img, ret_marks
 

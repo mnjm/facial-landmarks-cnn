@@ -1,12 +1,12 @@
 from tensorflow import keras as K
 import cv2
 import numpy as np
-from read_dataset_300vw import read_video_with_annot
-from read_dataset_others import read_img_with_annot, read_img_with_annot
+from data.read_300vw import read_video_with_annot
+from data.read_others import read_img_with_annot
 from os import path
 from argparse import ArgumentParser
-from utils import scale_bbox_and_crop, resize_to_input_shape, apply_img_hist, draw_marks
-from utils import opencv_pause_quit_window
+from data.utils import scale_bbox_and_crop, resize_to_input_shape, apply_img_hist, draw_marks
+from data.utils import opencv_pause_quit_window
 from glob import glob
 
 def get_cl_args():

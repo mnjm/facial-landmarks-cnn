@@ -14,15 +14,12 @@ import utils
 #     ├── {img}.(jpg|png)
 #     ├── {img}.pts
 
-# left eye, right eye and mouth points each with (left, right) pairs
-six_key_points_idxs = [36, 39, 42, 45, 48, 54]
-
 def read_img_with_annot(img_path, n_points = 68):
-    assert n_points == 68 or n_points == 6, "Invalid n_points: it should either be 68 or 6"
     img = cv2.imread(img_path)
     marks = utils.read_pts_file(path.splitext(img_path)[0] + ".pts")
     bbox = utils.bbox_from_marks(marks)
-    if n_points == 6: marks = marks[six_key_points_idxs, :]
+    assert n_points in utils.marks_map_68.keys(), f"Map for {n_points}pts not found"
+    marks = marks[utils.marks_map_68[n_points], :]
     # get sample name - remove extension
     sample_name = path.basename(img_path)[:-4]
     return sample_name, img, bbox, marks
