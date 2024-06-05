@@ -4,7 +4,13 @@ To begin with, this project builds upon [ccn-facial-landmark](https://github.com
 
 Here is a quick demo
 
-![Demo](./demo.gif?raw=true)
+**8 Points with Face alignment**
+
+![Demo with hs](./demos/demo_8pts_hs.gif?raw=true)
+
+**6 Points**
+
+![Demo](./demo_6pts.gif?raw=true)
 
 **Dependencies**
 
@@ -41,7 +47,7 @@ frame_no format "%06d"
 ```
 To run, pass the dataset dir and path to store the tf record file,
 ```bash
-python prep_300vw.py <dataset_loc> <tfrecord_save_loc> (--test_set)
+python prep_300vw.py <dataset_loc> <tfrecord_save_loc> (--test_set) --n_points <6 (or) 8>
 ```
 
 ## Other datasets
@@ -57,7 +63,7 @@ python prep_300vw.py <dataset_loc> <tfrecord_save_loc> (--test_set)
 ```
 To run, provide the dataset directory and the path to store the TFRecord file
 ```bash
-python prep_others.py <dataset_loc> <tfrecord_save_loc> (--test_set)
+python prep_others.py <dataset_loc> <tfrecord_save_loc> (--test_set) --n_points <6 (or) 8>
 ```
 
 ## Training
@@ -68,7 +74,7 @@ python train.py <model_type> \
 --load_from <best_checkpoint_to_start_from> \ # This can be skipped
 --epochs 10 --batch_size 1024 --learning_rate 0.001
 ```
-- Check [here](https://github.com/mnjm/facial-landmarks-cnn/blob/f2dfcc883b07128877f19eeed0abdfe616ea10c5/train.py#L10C1-L10C57) for model types
+- Check [here](https://github.com/mnjm/facial-landmarks-cnn/blob/main/train.py#L10C1-L10C57) for model types
 
 ## Eval
 ```bash
@@ -81,13 +87,22 @@ python train.py <model_type> \
 ## Export
 Best model can be exported to Keras native `.keras` format
 ```bash
-python train.py <model_type> --export_model --load_from <model_to_export>
+python train.py <model_type> --export_model --load_from <model_to_export> --_n_points <6 (or) 8>
 ```
 
 ## Visual Test
 To visually test the model on a video file or directory containing images, run the below command
 ```
-python test.py <exported_model_file> <avi_(or)_dir_loc> (--save_video)
+python visual_test.py <exported_model_file> <avi_(or)_dir_loc> (--save_video) --n_points <6 (or) 8>
+```
+*`--save_video` will save the visual output to `output.mp4`*
+
+## Visual Test with Face alignment
+
+**Only works on 8pts**
+To visually test the model on a video file or directory containing images, run the below command
+```
+python visual_test_headpose.py <exported_model_file> <avi_(or)_dir_loc> (--save_video) --n_points 8
 ```
 *`--save_video` will save the visual output to `output.mp4`*
 
