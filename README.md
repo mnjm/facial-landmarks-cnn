@@ -10,7 +10,7 @@ Here is a quick demo
 
 **6 Points**
 
-![Demo](./demo_6pts.gif?raw=true)
+![Demo](./demos/demo_6pts.gif?raw=true)
 
 **Dependencies**
 
