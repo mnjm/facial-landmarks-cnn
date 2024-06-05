@@ -4,7 +4,7 @@ import utils
 
 def convert_to_example_and_serialize(sample_name, img, marks):
     img, marks = img.astype(np.uint8), marks.astype(np.uint8)
-    def _bytes_feature(x): return tf.train.Feature(bytes_list = tf.train.BytesList(value=[x]))
+    _bytes_feature = lambda x: tf.train.Feature(bytes_list = tf.train.BytesList(value=[x]))
     feature = {
         'name':  _bytes_feature(sample_name.encode('utf-8')),
         'image': _bytes_feature(img.tobytes()),
@@ -14,7 +14,6 @@ def convert_to_example_and_serialize(sample_name, img, marks):
     return example.SerializeToString()
 
 class MarkDataset:
-    flip_six_mark_idx = tf.constant(utils.flip_six_mark_idx)
 
     def __init__(self, tf_record_files_pattern, input_shape, n_points, batch_size, aug_flip_p = 0.5, aug_seed = None):
         self.tf_record_files_pattern = tf_record_files_pattern
@@ -23,6 +22,8 @@ class MarkDataset:
         self.batch_size = batch_size
         self.aug_flip_p = aug_flip_p
         self.aug_seed = aug_seed
+        assert self.n_points in utils.flip_map.keys(), f"Flip map for {self.n_points}pts not found"
+        self.aug_flip_map = tf.constant(utils.flip_map[self.n_points])
 
     def _parse_tfrecord(self, example):
         feature_description = {
@@ -51,7 +52,7 @@ class MarkDataset:
         marks = tf.reshape(marks, (self.n_points, 2))
 
         # Flip the marks and adjust x
-        ret_marks = tf.gather(marks, MarkDataset.flip_six_mark_idx)
+        ret_marks = tf.gather(marks, self.aug_flip_map)
         ret_marks = tf.stack([img.shape[1] - ret_marks[:, 0], ret_marks[:, 1]], axis=1)
         ret_marks = tf.reshape(ret_marks, [self.n_points * 2])
 
