@@ -19,12 +19,14 @@ Here is a quick demo
 
 ## Datasets
 
-- [300-VW](https://ibug.doc.ic.ac.uk/resources/300-VW/)
-- [300-W](https://ibug.doc.ic.ac.uk/resources/300-W/)
-- [AFW](https://www.ics.uci.edu/~xzhu/face/)
-- [HELEN](http://www.ifp.illinois.edu/~vuongle2/helen/)
-- [IBUG](https://ibug.doc.ic.ac.uk/resources/facial-point-annotations/)
-- [LFPW](https://neerajkumar.org/databases/lfpw/)
+| Sources |
+| -------- |
+| [300-VW](https://ibug.doc.ic.ac.uk/resources/300-VW/) |
+| [300-W](https://ibug.doc.ic.ac.uk/resources/300-W/) |
+| [AFW](https://www.ics.uci.edu/~xzhu/face/) |
+| [HELEN](http://www.ifp.illinois.edu/~vuongle2/helen/) |
+| [IBUG](https://ibug.doc.ic.ac.uk/resources/facial-point-annotations/) |
+| [LFPW](https://neerajkumar.org/databases/lfpw/) |
 
 - *Some* datasets mentioned above came pre-split into training and test sets. Others I manually split them randomly.
 - Prepared dataset is stored and served to the model as tfrecord files in sharded fashion
