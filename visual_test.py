@@ -8,6 +8,7 @@ from argparse import ArgumentParser
 from data.utils import scale_bbox_and_crop, resize_to_input_shape, apply_img_hist, draw_marks
 from data.utils import opencv_pause_quit_window
 from glob import glob
+from headpose import draw_headpose
 
 def get_cl_args():
     parser = ArgumentParser("Test model on dataset")
@@ -15,6 +16,7 @@ def get_cl_args():
     parser.add_argument("loc", help="path images folder or .avi file")
     parser.add_argument("--n_points", default=6, type=int, help = "How many points?")
     parser.add_argument("--save_video", default=False, help = "save output video?", action='store_true')
+    parser.add_argument("--draw_headpose", default=False, help = "Enable draw headpose", action="store_true")
     return parser.parse_args()
 
 def eval_on_frame(model, img, bbox, marks, n_points=6):
@@ -82,7 +84,11 @@ def main():
         draw_marks(img, p_marks, color=(0,255,0), draw_idx = False)
 
         frame = cv2.resize(img, (600, 800)) if not args.loc.endswith('.avi') else img
+
+        if args.draw_headpose: draw_headpose(frame, p_marks)
+
         cv2.imshow("Predicted", frame)
+
         if opencv_pause_quit_window(): break
 
         if args.save_video:
