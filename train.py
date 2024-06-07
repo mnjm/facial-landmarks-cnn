@@ -2,6 +2,7 @@ from tensorflow import keras as K
 from os import path, mkdir
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 from data import MarkDataset
+from data.utils import marks_map_68
 from models.from_github import github_model
 from models.vgg16 import vgg16
 from math import ceil
@@ -9,20 +10,21 @@ from datetime import datetime
 
 which_model = { 'github': github_model, 'vgg16': vgg16 }
 INPUT_SHAPE = (128, 128, 1)
-N_POINTS = 8
 
 N_TRAINING_SAMPLES = 188772
 N_VAL_SAMPLES = 34262
 
 def get_cl_args():
     parser = ArgumentParser(description="Training", formatter_class = ArgumentDefaultsHelpFormatter)
-    parser.add_argument("model_type", help="Avai: " + ",".join(which_model.keys()), type = str)
+    parser.add_argument("model_type", help="Avail: " + ",".join(which_model.keys()), type = str)
+    parser.add_argument("--n_points", default = 6, type = int, help="No. of points to train for\nAvail: " + \
+        ",".join([ str(x) for x in marks_map_68.keys() ]))
     parser.add_argument("--tfrecords_dir", default=None, type = str,
                         help="Tfrecords dir: will lookfor files with `trainset` and `testset` in it name")
     parser.add_argument("--eval_model", default=False, action = 'store_true',
                         help="Eval the model, do not train")
-    parser.add_argument("--export_model", default=False, action = 'store_true',
-                        help="Export model: remove optimizers and export the file")
+    parser.add_argument("--export_model", default=None, action = 'store_true',
+                        help="Export model path. This will remove optimizers and export the model as .keras file")
     parser.add_argument("--epochs", default=1, help="Epochs to run", type = int)
     parser.add_argument("--batch_size", default=64, help="Batch_size", type = int)
     parser.add_argument("--learning_rate", default=0.01, help="learning_rate", type = float)
@@ -36,7 +38,7 @@ def get_dataset(args, val_set = False):
     ds = MarkDataset(
             path.join(args.tfrecords_dir, f"*_{train_or_test}_*.tfrecord"),
             INPUT_SHAPE,
-            N_POINTS,
+            args.n_points,
             args.batch_size,
             aug_flip_p = 0.5,
             aug_seed = 123
@@ -46,8 +48,10 @@ def get_dataset(args, val_set = False):
 def main():
     args = get_cl_args()
 
+    assert args.n_points in marks_map_68.keys(), f"Invalid n_points it should be " + ",".join( str(x) for x in marks_map_68.keys() )
+
     # Load model
-    model = which_model[args.model_type](INPUT_SHAPE, N_POINTS)
+    model = which_model[args.model_type](INPUT_SHAPE, args.n_points)
     print(f"Model name: {model.name}")
     print("="*100)
     model.summary()
@@ -57,16 +61,15 @@ def main():
         model.load_weights(args.load_from)
 
     if args.export_model:
-        assert args.load_from, "Pass the model to export"
-
-        export_to = path.join(args.save_dir, model.name + "_exported.keras")
+        assert args.load_from, "Pass the model to load from"
+        export_to = args.export_model
+        if not export_to.endswith(".keras"): export_to = path.splitext(export_to)[0] + '.keras'
         assert not path.isfile(export_to), f"{export_to} exists!, move it somewhere and rerun exporting"
-
         model.save(export_to)
         print(f"Model saved at {export_to}")
         return
 
-    # Compike
+    # Compile
     model.compile(
             optimizer = K.optimizers.Adam(learning_rate = args.learning_rate),
             loss = K.losses.mean_squared_error

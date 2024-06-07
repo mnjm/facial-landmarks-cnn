@@ -6,8 +6,6 @@ marks_map_68 = {
     6 : [36, 39, 42, 45, 48, 54],
     # left eye, right eye, mouth points each with (left, right) pairs, nose tip and chin
     8 : [36, 39, 42, 45, 48, 54, 33, 8],
-    # default map
-    68 : list(range(68))
 }
 
 # map for flip augmentation
