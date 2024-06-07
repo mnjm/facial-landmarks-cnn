@@ -4,7 +4,7 @@ To begin with, this project builds upon [ccn-facial-landmark](https://github.com
 
 Here is a quick demo
 
-**8 Points with Face alignment**
+**8 Points with Face alignment / HeadPose**
 
 ![Demo with hs](./demos/demo_8pts_hs.gif?raw=true)
 
@@ -97,12 +97,12 @@ python visual_test.py <exported_model_file> <avi_(or)_dir_loc> (--save_video) --
 ```
 *`--save_video` will save the visual output to `output.mp4`*
 
-## Visual Test with Face alignment
+## Visual Test with Face alignment / Headpose
 
 **Only works on 8pts**
 To visually test the model on a video file or directory containing images, run the below command
 ```
-python visual_test_headpose.py <exported_model_file> <avi_(or)_dir_loc> (--save_video) --n_points 8
+python visual_test.py <exported_model_file> <avi_(or)_dir_loc> (--save_video) --n_points 8 --draw_headpose
 ```
 *`--save_video` will save the visual output to `output.mp4`*
 
