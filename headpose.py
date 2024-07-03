@@ -29,7 +29,8 @@ def draw_headpose(img, marks):
     dist_coeffs = np.zeros((4, 1))
     success, r_vec, t_vec = cv2.solvePnP(marks_3d, marks, camera_mat,
                                             dist_coeffs, flags=cv2.SOLVEPNP_ITERATIVE)
-    if not success: return
+    if not success:
+        return
 
     nose_vec_projected = cv2.projectPoints(np.array([(0,0,250.0)]), r_vec, t_vec,
                                             camera_mat, dist_coeffs)[0]

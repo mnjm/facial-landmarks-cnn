@@ -85,17 +85,21 @@ def main():
 
         frame = cv2.resize(img, (600, 800)) if not args.loc.endswith('.avi') else img
 
-        if args.draw_headpose: draw_headpose(frame, p_marks)
+        if args.draw_headpose:
+            draw_headpose(frame, p_marks)
 
         cv2.imshow("Predicted", frame)
 
-        if opencv_pause_quit_window(): break
+        if opencv_pause_quit_window():
+            break
 
         if args.save_video:
-            if not vid_writer: vid_writer = create_vid_writer(frame)
+            if not vid_writer:
+                vid_writer = create_vid_writer(frame)
             vid_writer.write(frame)
 
-    if vid_writer: vid_writer.release()
+    if vid_writer:
+        vid_writer.release()
     return
 
 if __name__ == "__main__":

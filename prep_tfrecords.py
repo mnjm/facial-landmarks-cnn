@@ -63,7 +63,7 @@ def preprocess(img, bbox, marks):
 if __name__ == "__main__":
     args = prep_args()
 
-    assert args.n_points in marks_map_68.keys(), f"Invalid n_points it should be " + ",".join( str(x) for x in marks_map_68.keys() )
+    assert args.n_points in marks_map_68.keys(), "Invalid n_points it should be " + ",".join( str(x) for x in marks_map_68.keys() )
 
     dataset_name = path.basename(args.dataset)
     subdir = "testset" if args.test_set else "trainset"
@@ -83,7 +83,7 @@ if __name__ == "__main__":
     tf_record_base_name = path.join(args.outdir, f"{dataset_name}_{subdir}_" + \
                                     "x".join([str(x) for x in INPUT_SHAPE]) + f"_{args.n_points}pts_")
     count, shard_idx, shard_sample_count = 0, 0, 0
-    create_new_tfrec = lambda: tf.io.TFRecordWriter(tf_record_base_name + f"{shard_idx}.tfrecord")
+    create_new_tfrec = lambda: tf.io.TFRecordWriter(tf_record_base_name + f"{shard_idx}.tfrecord")  # noqa: E731
     writer = create_new_tfrec()
 
     for s_name, img, bbox, marks in ds_iter_gen(dataset_path, args.n_points):

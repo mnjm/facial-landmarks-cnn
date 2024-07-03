@@ -48,7 +48,7 @@ def get_dataset(args, val_set = False):
 def main():
     args = get_cl_args()
 
-    assert args.n_points in marks_map_68.keys(), f"Invalid n_points it should be " + ",".join( str(x) for x in marks_map_68.keys() )
+    assert args.n_points in marks_map_68.keys(), "Invalid n_points it should be " + ",".join( str(x) for x in marks_map_68.keys() )
 
     # Load model
     model = which_model[args.model_type](INPUT_SHAPE, args.n_points)
@@ -63,7 +63,8 @@ def main():
     if args.export_model:
         assert args.load_from, "Pass the model to load from"
         export_to = args.export_model
-        if not export_to.endswith(".keras"): export_to = path.splitext(export_to)[0] + '.keras'
+        if not export_to.endswith(".keras"):
+            export_to = path.splitext(export_to)[0] + '.keras'
         assert not path.isfile(export_to), f"{export_to} exists!, move it somewhere and rerun exporting"
         model.save(export_to)
         print(f"Model saved at {export_to}")
@@ -78,9 +79,11 @@ def main():
     assert args.tfrecords_dir, "Pass the tfrecords pls"
 
     ch_path = path.join(args.save_dir, "checkpoints")
-    if not path.isdir(ch_path): mkdir(ch_path)
+    if not path.isdir(ch_path):
+        mkdir(ch_path)
     logs_path = path.join(args.save_dir, "logs")
-    if not path.isdir(ch_path): mkdir(logs_path)
+    if not path.isdir(ch_path):
+        mkdir(logs_path)
 
     # Dataset
     train_ds, val_ds = get_dataset(args), get_dataset(args, val_set = True)
@@ -116,4 +119,5 @@ def main():
         callbacks = cbs
     )
 
-if __name__ == "__main__": main()
+if __name__ == "__main__":
+    main()
