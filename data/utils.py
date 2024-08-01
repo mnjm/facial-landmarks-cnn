@@ -29,7 +29,8 @@ def read_pts_file(f_path):
     i = 0
     with open(f_path) as f:
         for line in f:
-            if "version" in line or "n_points" in line or "{" in line or "}" in line: continue
+            if "version" in line or "n_points" in line or "{" in line or "}" in line:
+                continue
             x, y = ( float(val) for val in line.split(" ")[:2] )
             marks[i, 0], marks[i, 1] = x - 1, y - 1
             i += 1
@@ -39,9 +40,11 @@ def read_pts_file(f_path):
 def opencv_pause_quit_window(delay=1):
     SPACE_KEY = 32
     key = cv2.waitKey(delay)
-    if key == ord('q'): return True
+    if key == ord('q'):
+        return True
     elif key == SPACE_KEY:
-        while cv2.waitKey(-1) != SPACE_KEY: continue
+        while cv2.waitKey(-1) != SPACE_KEY:
+            continue
     return False
 
 # Draws marks on images
@@ -49,7 +52,8 @@ def draw_marks(img, marks, color=(0,0,255), draw_idx=False, idx_color=(0, 255, 1
     for i, pt in enumerate(marks):
         x, y = int(pt[0]), int(pt[1])
         cv2.circle(img, (x,y), 2, color, -1)
-        if draw_idx: cv2.putText(img, str(i), (x,y), cv2.FONT_HERSHEY_SIMPLEX, 0.4, idx_color, 1, -1)
+        if draw_idx:
+            cv2.putText(img, str(i), (x,y), cv2.FONT_HERSHEY_SIMPLEX, 0.4, idx_color, 1, -1)
 
 def draw_bbox(img, bbox, color=(255,0,0)):
     p1 = int(bbox[0,0]), int(bbox[0,1])
@@ -65,10 +69,14 @@ def scale_bbox_and_crop(img, bbox, marks, scale):
     ret_bbox = scale_bbox(bbox, scale)
     ret_bbox = np.round(ret_bbox).astype(np.int32)
     (x0, y0, x1, y1) = ret_bbox.reshape(4)
-    if x0 < 0: x0 = 0
-    if y0 < 0: y0 = 0
-    if x1 > img.shape[1]: x1 = img.shape[1]
-    if y1 > img.shape[0]: y1 = img.shape[0]
+    if x0 < 0:
+        x0 = 0
+    if y0 < 0:
+        y0 = 0
+    if x1 > img.shape[1]:
+        x1 = img.shape[1]
+    if y1 > img.shape[0]:
+        y1 = img.shape[0]
     ret_bbox = np.array( [ [x0, y0], [x1, y1] ] )
     ret_img = img[y0:y1, x0:x1]
     ret_marks = marks - ret_bbox[0, :]

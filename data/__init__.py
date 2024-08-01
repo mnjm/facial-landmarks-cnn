@@ -4,7 +4,8 @@ from . import utils
 
 def convert_to_example_and_serialize(sample_name, img, marks):
     img, marks = img.astype(np.uint8), marks.astype(np.uint8)
-    _bytes_feature = lambda x: tf.train.Feature(bytes_list = tf.train.BytesList(value=[x]))
+    def _bytes_feature(x):
+        return tf.train.Feature(bytes_list=tf.train.BytesList(value=[x]))
     feature = {
         'name':  _bytes_feature(sample_name.encode('utf-8')),
         'image': _bytes_feature(img.tobytes()),
@@ -99,4 +100,5 @@ if __name__ == "__main__":
         draw_marks(img, marks, draw_idx = True)
 
         cv2.imshow("Final", img)
-        if opencv_pause_quit_window(300): break
+        if opencv_pause_quit_window(300):
+            break

@@ -31,7 +31,8 @@ class Video_300VW:
 
     def next_frame(self):
 
-        if self.done: return False, None, None, None, None
+        if self.done:
+            return False, None, None, None, None
 
         got_frame, img = self.vid.read()
         if not got_frame:
@@ -60,7 +61,8 @@ def read_video_with_annot(vid_path, n_points = 68):
     vid = Video_300VW(vid_path, n_points)
     while True:
         got_frame, sample_name, img, bbox, marks = vid.next_frame()
-        if not got_frame: break
+        if not got_frame:
+            break
         yield sample_name, img, bbox, marks
     return
 
@@ -94,7 +96,8 @@ def show_video_with_ann(vid_path, n_points):
         utils.draw_marks(s_flip_img, flip_marks, draw_idx = True)
         cv2.imshow("flip", s_flip_img)
 
-        if utils.opencv_pause_quit_window(): break
+        if utils.opencv_pause_quit_window():
+            break
 
     print(f"Video:{vid_name} Frame_count: {f_count}")
 

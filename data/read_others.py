@@ -54,7 +54,8 @@ def show_img_with_ann(img_paths_l, n_points = 68):
         utils.draw_marks(s_flip_img, flip_marks, draw_idx = True)
         cv2.imshow("flip", s_flip_img)
 
-        if utils.opencv_pause_quit_window(): break
+        if utils.opencv_pause_quit_window():
+            break
     return
 
 if __name__ == "__main__":
